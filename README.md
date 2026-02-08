@@ -14,5 +14,5 @@ crayon 2とかいう改悪デザインを生み出しやがったので
 
 Yukitensoftwic Companyの新サイト
 
-https://norauki100.github.io/main/NerusCompany/nerus\_n8-home.html
+https://norauki100.github.io/main/NerusCompany/norus-n6-1.html
 
