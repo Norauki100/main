@@ -1,0 +1,441 @@
+<html lang="ja"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yukitensoftwic Company</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&amp;family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #172F4B;/*背景これ*/
+            color: #fff;
+            min-height: 100vh;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        
+        /* 新なびげーしょん */
+        .menu-block {
+            background-color: #1a3a5a;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            margin: 0 auto 20px;
+            max-width: 1450px;
+            border-radius: 5px;
+        }
+        
+        .menu-container {
+            padding: 0 20px;
+        }
+        
+        .menu-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .menu-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .menu-links a:hover {
+            color: #3498db;
+        }
+        
+        .menu-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #3498db;
+            transition: width 0.3s ease;
+        }
+        
+        .menu-links a:hover::after {
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-links {
+                flex-wrap: wrap;
+                gap: 15px;
+                padding: 0 10px;
+            }
+            
+            .menu-links li {
+                margin: 5px 0;
+            }
+        }
+        
+        
+        .header-container {
+            margin: 20px 0 0 0;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .content-container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 0 clamp(10px, 5vw, 80px);
+            box-sizing: border-box;
+        }
+        
+        .color-changing-header {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            margin: 0 0 3px 0; /* ヘッダーとコンテンツの間隔 */
+            align-items: center;
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
+            border-radius: 5px;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .color-changing-header h1 {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            padding: 0 20px;
+            margin: 0;
+        }
+        
+        .main-content {
+            background-color: #ffffff;
+            min-height: 200px; /*1番のブロック*/
+            padding: 5px 0 15px; 
+            color: #333333;
+            border-radius: 5px;
+            margin-top: 3px; 
+        }
+
+        .main-content h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .main-content p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            text-align: center;
+            max-width: 800px;
+            margin: 5px auto;
+            white-space: pre-line;
+        }
+
+        .second-block, .fourth-block {
+            background-color: #f8f9fa;
+            min-height: 120px; /*2番のブロック*/
+            padding: 15px 0;
+            color: #333333;
+            border-radius: 5px;
+            margin-top: 3px;
+        }
+        
+        .block-content {
+            display: block;
+            width: 100%;
+            max-width: 1020px;
+            margin: 0;
+            padding: 0 10px;
+        }
+        
+        .image-container {
+            flex: 1;
+            min-height: 300px;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 40px;
+            border-radius: 5px;
+        }
+        
+        .text-content {
+            width: 100%;
+            padding: 0 20px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        
+        .second-block .text-content,
+        .third-block .text-content,
+        .fourth-block .text-content {
+            padding: 0 20px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .second-block h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .second-block p, .third-block p, .fourth-block p {
+            font-size: 1.3em;
+            line-height: 1.5;
+            text-align: left;
+            max-width: none;
+            width: 1100;
+            margin: 5px 0;
+            white-space: pre-line;
+        }
+
+        .third-block {
+            background-color: #ffffff;
+            min-height: 200px;/*3番のブロック*/
+            padding: 15px 0;
+            color: #333333;
+            border-radius: 5px;
+            margin-top: 3px;
+        }
+
+        .third-block h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .fourth-block h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;/*4これ*/
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .section-title-bar {
+            background-color: #1a3a5f;
+            color: white;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin: 0 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+
+        .second-block, .third-block, .fourth-block {
+            margin: 3px 0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="content-container">
+            <div class="color-changing-header" id="colorHeader">
+                <h1>Yukitensoftwic Company</h1>
+            </div>
+            
+            <div class="menu-block">
+                <div class="menu-container">
+                    <ul class="menu-links">
+                        <li><a href="norus-n6-1.html">ホーム</a>
+
+</li>
+                        <li><a href="norus-n6-2.html">製品一覧</a></li><li><a href="norus-n6-4.html">製品へのリンク</a></li>
+                        <li><a href="norus-n6-3.html">会社について</a></li>
+                        <li><a href="https://wikiwiki.jp/maitestu-net/%E5%8C%97%E5%B7%9D%E9%AB%98%E9%80%9F%E9%89%84%E9%81%93">北川鉄道について</a></li><li><a href="https://scratch.mit.edu/studios/33778194">Scratchのスタジオ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="content-container">
+                    <h2>製品一覧</h2>
+                    <p>Yukitensoftwic Companyで作られたものを記載しております。
+(一部製品がここにない場合があります)<br>
+                    </p>
+                </div>
+            </div>
+            <div class="second-block">
+                <div class="section-title-bar">HTML系列</div>
+                <div class="block-content">
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div>
+                            <p style="white-space: pre-line; margin: 0px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">Nerus OS H9</p>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="second-block">
+                <div class="section-title-bar">Scratch系列</div>
+                <div class="block-content">
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div>
+                            <p style="white-space: pre-line; margin: 0px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">Ner/OS系ーーーー
+Nerus OS Next 9 "Nocturne"
+Nerus OS 8 Next
+Nerus OS 7
+Nerus OS 6
+Nerus OS 5
+Nerus OS 4/Tablet Mobile Edition
+Nerus OS 3
+Nerus OS 2
+Nerus OS
+Lun/OS系ーーーー
+Luna OS 12
+Luna OS 11
+Luna OS 10
+omg OS系ーーーー
+omg os N1/Service Pack 1,2
+omg os 5/5 Plus
+omg os 4
+omg os 3
+omg os 2 Home/Pro
+omg os /Pro/Server/For Scratch
+開発版とかベータ版ーーーー
+Nerus OS 6 開発初期版/初期版
+omg os 3 リメイク版
+Luna OS
+Nerus OS 2 Beta
+Nerus OS 2 オープンソース版
+omg nerus os
+omg os N1 Beta</p>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="second-block">
+                <div class="section-title-bar">工作系列 (限定公開)</div>
+                <div class="block-content">
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div>
+                            <p style="white-space: pre-line; margin: 0px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">～過去の工作～
+家(原寸大ではない)
+～制作終了したもの～
+Nerus Phone
+New omg pc
+カレンダー
+omg ペン
+omg tablet
+kusogame
+omg pc 19 Tablet(作るのキャンセル)
+～休止中～
+omg watch
+～更新中～
+鉄道駅名カードバトル (一応更新中)
+1400系 1409F (空想列車)
+1500系 1502F (空想列車)
+N10系 1803F (空想列車)
+通常版
+omg phone 15 16 18
+ミニシリーズ版
+omg phone 12 17
+フリップ版
+omg phone 16 Flip</p>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="second-block">
+                <div class="section-title-bar">その他</div>
+                <div class="block-content">
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div>
+                            <p style="white-space: pre-line; margin: 0px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">Nerus Bot (Discord Bot)
+北川国際空港 (Minecraft)
+北川高速鉄道 (Minecraft)
+omg font 1.0-5.0
+Norus Program
+omg os N1 開発目標 "今までにない、新しさを"
+norus-n6 (サーバ)</p>
+                        </div>
+                    </div>
+                </div>
+            </div><div class="second-block">
+                <div class="section-title-bar">コードネーム</div>
+                <div class="block-content">
+                    <div class="text-content" style="display: flex; align-items: flex-start; gap: 20px;">
+                        <div>
+                            <p style="white-space: pre-line; margin: 0px 0 0 0; text-align: left; padding: 0; width: 100%; box-sizing: border-box;">Luna OS 10 Code Name "biscuit" -素早く、快適に！-
+Luna OS 11 Code Name "chocolate" 画期的な「ホームバー」とともに。
+Luna OS 12 Code Name Candy
+Nerus OS Code Name "Norus"
+Nerus OS 4 Code Name ''Luna''
+Nerus OS 5 Code Name ''Navy''
+Nerus OS 6 Code Name ''Focus''
+Nerus OS 7 Code Name "Vision" -新しさと、美しさ。-
+Nerus OS 8 Next Code Name "Crystal" -今までにない進化-
+Nerus OS Next 9 Code Name Nocturne</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
+        </div>
+    </div>
+    
+    <div style="height: 20px;"></div>
+    
+    <a href="#" id="back-to-top" style="position: fixed; bottom: 30px; right: 30px; background-color: rgb(52, 152, 219); color: white; width: 50px; height: 50px; text-align: center; line-height: 50px; border-radius: 50%; text-decoration: none; font-size: 24px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px; display: none; z-index: 9999;">↑</a>
+    
+    <footer style="background-color: #2c3e50; color: #ecf0f1; padding: 20px 0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; margin-top: 20px;">
+        <p style="margin: 0;">© 2016-2026 Yukitensoftwic Company. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // Back to top button functionality
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+        
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body></html>
