@@ -147,7 +147,7 @@ body {
     white-space: pre-line;
 }
 
-.second-block, .fourth-block {
+.second-block, .fourth-block, .fifth-block {
     background-color: #f8f9fa;
     min-height: 120px;
     padding: 15px 0;
@@ -171,13 +171,38 @@ body {
     box-sizing: border-box;
 }
 
+.image-container {
+    flex: 0 0 50%;
+    min-width: 250px;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
 .second-block .text-content,
 .third-block .text-content,
-.fourth-block .text-content {
+.fourth-block .text-content,
+.fifth-block .text-content {
     padding: 0 20px;
     margin: 0;
     width: 100%;
     box-sizing: border-box;
+}
+
+.second-block .text-content:last-child {
+    flex: 1;
 }
 
 .second-block h2 {
@@ -188,7 +213,7 @@ body {
     text-align: center;
 }
 
-.second-block p, .third-block p, .fourth-block p {
+.second-block p, .third-block p, .fourth-block p, .fifth-block p {
     font-size: 1.3em;
     line-height: 1.5;
     text-align: left;
@@ -236,7 +261,7 @@ body {
     border-radius: 8px;
 }
 
-.second-block, .third-block, .fourth-block {
+.second-block, .third-block, .fourth-block, .fifth-block {
     margin: 3px 0;
     border-radius: 4px;
     overflow: hidden;
