@@ -1,0 +1,341 @@
+/* Nerus OS H10 - Main Stylesheet */
+
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    background: radial-gradient(circle at top left, #4a00e0, #8e2de2, #4a00e0);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+}
+
+/* Background Gradient Animation */
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+}
+
+.window-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.window-fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+/* Window Header Drag Cursor */
+.window-header {
+    cursor: move;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+/* Autocomplete List */
+.autocomplete-list {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #4B5563;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 60;
+    top: calc(100% + 5px);
+}
+
+.autocomplete-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: #FFFFFF;
+}
+
+.autocomplete-item:hover {
+    background-color: #6B7280;
+}
+
+/* Clock Font */
+#clock {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+/* Start Menu */
+#start-menu {
+    position: fixed;
+    left: 10px;
+    bottom: 66px;
+    width: 450px;
+    height: 420px;
+    border-radius: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    z-index: 60;
+    pointer-events: none;
+}
+
+#start-menu.start-menu-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* File Explorer Sidebar */
+.sidebar {
+    width: 250px;
+    transition: width 0.3s ease-out;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .sidebar-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-item svg {
+    flex-shrink: 0;
+}
+
+.sidebar-item .sidebar-text {
+    flex-grow: 1;
+    margin-left: 8px;
+}
+
+/* Custom Blur Effect */
+.backdrop-blur-50-percent {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Custom Color Picker */
+input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-moz-color-swatch-wrapper {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+    width: 48px;
+    height: 48px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2d3748;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #606f8a;
+}
+
+/* Taskbar Icons */
+.taskbar-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.taskbar-icon.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #fff;
+}
+
+/* Touch Device Taskbar Spacing */
+@media (max-width: 768px) {
+    .taskbar-icon {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+}
+
+/* Browser Home Screen */
+.browser-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background-color: #1f2937;
+}
+
+.home-search-container {
+    width: 80%;
+    max-width: 600px;
+}
+
+.home-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #374151;
+    color: #ffffff;
+    border-radius: 2rem;
+    border: 2px solid transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.home-search-input:focus {
+    border-color: #4A90E2;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    max-width: 600px;
+    margin-top: 2rem;
+}
+
+.home-app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.home-app-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.home-app-icon .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.home-app-icon .label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Home Screen Search & Autocomplete */
+.browser-home .home-search-container {
+    position: relative;
+}
+
+.browser-home .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* Window Maximized State */
+.maximized {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+/* Window Minimized State */
+.minimized {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Spin Animation for Refresh Button */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 0.5s linear;
+}
