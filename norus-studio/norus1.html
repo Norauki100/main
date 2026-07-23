@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私の自己紹介</title>
+    <style>
+        /*これhttps://norauki100.github.io/Norauki100/ 用のHTMLとCSSのコードです。*/
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000620 0%, #000a40 100%);
+            color: #e0e0ff;
+            min-height: 100vh;
+        }
+        .header-container {
+            background: rgba(0, 20, 60, 0.9);
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 50, 0.5);
+            margin-bottom: 10px;
+        }
+        .header-content h1 {
+            color: #80b0ff;
+            text-shadow: 0 0 10px rgba(128, 176, 255, 0.5);
+            margin: 0;
+            font-size: 2rem;
+        }
+        .content-wrapper {
+            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .content-block {
+            background: rgba(0, 20, 60, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 50, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 150, 255, 0.15);
+        }
+        .section-title {
+            color: #6090e0;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        a {
+            color: #80b0ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        a:hover {
+            text-decoration: none;
+            color: #a0d0ff;
+            text-shadow: 0 0 8px rgba(128, 176, 255, 0.8);
+        }
+        footer {
+            background: rgba(0, 20, 60, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            margin-top: 10px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 50, 0.5);
+        }
+        footer p {
+            margin: 0;
+        }
+        @media (max-width: 600px) {
+            .header-content h1 {
+                font-size: 1.5rem;
+            }
+            .content-block {
+                padding: 20px;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="header-content">
+            <h1>こんにちは、のらうきです！</h1>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content-block">
+            <h2 class="section-title">自己紹介</h2>
+            <p>このページは、私のことを少しでも知ってもらうために作りました。</p>
+        </div>
+
+        <div class="content-block">
+            <h2 class="section-title">基本情報</h2>
+            <ul>
+                <li><strong>名前:</strong> のらうき</li>
+                <li><strong>出身地:</strong> 日本</li>
+                <li><strong>趣味:</strong> なんか作ったりゲームする</li>
+            </ul>
+        </div>
+
+        <div class="content-block">
+            <h2 class="section-title">興味のあること</h2>
+            <p>最近は寝るにハマっています。特に寝るについてもっと詳しく知りたいと思っています。</p>
+        </div>
+
+        <div class="content-block">
+            <h2 class="section-title">連絡先</h2>
+            <p>何かありましたら、お気軽にご連絡ください！</p>
+            <ul>
+                <li>GitHub: <a href="https://github.com/Norauki100/Norauki100/" target="_blank">NoraukiのGitHubプロフィール</a></li>
+                <li>2ページ目: <a href="intel.html" target="_blank">テストで作成した2ページ目</a></li>
+                <li>テストHTML: <a href="NerusOSLite.html" target="_blank">テストで作成したOS(実際ではない)</a></li>
+            </ul>
+        </div>
+
+        <div class="content-block">
+            <h2 class="section-title">このページについて</h2>
+            <p>このページはGitHub Desktopを使って作成・管理しています！</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Norauki. All rights reserved.</p>
+    </footer>
+</body>
+</html>

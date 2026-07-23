@@ -159,7 +159,7 @@ body {
 .block-content {
     display: block;
     width: 100%;
-    max-width: 1020px;
+    max-width: 100%;
     margin: 0;
     padding: 0 10px;
 }
@@ -172,8 +172,9 @@ body {
 }
 
 .image-container {
-    flex: 0 0 50%;
+    flex: 0 0 40%;
     min-width: 250px;
+    max-width: 500px;
     background-color: #e9ecef;
     display: flex;
     justify-content: center;
@@ -203,6 +204,24 @@ body {
 
 .second-block .text-content:last-child {
     flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .second-block .text-content[style*="display: flex"] {
+        flex-direction: column;
+    }
+    
+    .image-container {
+        flex: 0 0 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+        min-width: 100%;
+    }
+    
+    .second-block .text-content:last-child {
+        flex: 0 0 100%;
+    }
 }
 
 .second-block h2 {

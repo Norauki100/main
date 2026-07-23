@@ -1,5 +1,9 @@
 // Nerus OS H10 - Main Application JavaScript
 
+// Global variables for save dialog
+let selectedFolder = 'documents';
+let currentSaveCallback = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Clear localStorage on page load
     localStorage.removeItem('none-txt-content');
@@ -17,6 +21,36 @@ document.addEventListener('DOMContentLoaded', () => {
     let zIndexCounter = 30;
     const openWindows = {};
     
+    // Expose openWindows to global scope
+    window.openWindows = openWindows;
+    
+    // Virtual File System
+    const virtualFileSystem = {
+        home: {
+            'Nerus OS': { type: 'folder', icon: '📁' },
+            'None.txt': { type: 'file', icon: '📄', content: '' }
+        },
+        documents: {
+            'Readme.txt': { type: 'file', icon: '📄', content: 'Welcome to Nerus OS!' },
+            'Notes.txt': { type: 'file', icon: '📄', content: '' },
+            'Project.txt': { type: 'file', icon: '📄', content: '' }
+        },
+        images: {
+            'screenshot.png': { type: 'file', icon: '🖼️', content: '' },
+            'wallpaper.jpg': { type: 'file', icon: '🖼️', content: '' },
+            'icon.png': { type: 'file', icon: '🖼️', content: '' }
+        },
+        videos: {
+            'tutorial.mp4': { type: 'file', icon: '📹', content: '' },
+            'demo.mp4': { type: 'file', icon: '📹', content: '' }
+        },
+        music: {
+            'song1.mp3': { type: 'file', icon: '🎵', content: '' },
+            'song2.mp3': { type: 'file', icon: '🎵', content: '' },
+            'song3.mp3': { type: 'file', icon: '🎵', content: '' }
+        }
+    };
+    
     // Application Registry
     const apps = [
         { id: 'nerus-browser', name: 'Nerus Browser', icon: '🌐' },
@@ -25,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'nerus-calculator', name: 'Nerus Calculator', icon: '🧮' },
         { id: 'nerus-paint-tool', name: 'Nerus Paint Tool', icon: '🖌️' },
         { id: 'file-explorer', name: 'File Explorer', icon: '📁' },
-        { id: 'settings', name: '設定', icon: '⚙️' }
+        { id: 'settings', name: '設定', icon: '⚙️' },
+        { id: 'save-dialog', name: '名前を付けて保存', icon: '💾' }
     ];
     
     // Window Management Functions
@@ -206,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             appContent.innerHTML = getAppContent(app.id);
             appWindowContainer.appendChild(appWindow);
             openWindows[app.id] = { window: appWindow, minimized: false };
+            startMenu.classList.remove('start-menu-active');
             setupAppLogic(app.id, appWindow);
         }
     };
@@ -371,6 +407,67 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 `;
+            case 'save-dialog':
+                return `
+                    <div class="flex flex-col h-full">
+                        <!-- パス表示 -->
+                        <div class="p-3 bg-gray-700 border-b border-gray-600">
+                            <div class="flex items-center space-x-2 text-sm">
+                                <span class="text-gray-400">保存先:</span>
+                                <span id="save-path" class="text-white">/documents</span>
+                            </div>
+                        </div>
+                        
+                        <!-- メインエリア -->
+                        <div class="flex flex-grow overflow-hidden">
+                            <!-- 左サイドバー: フォルダ一覧 -->
+                            <div class="w-48 bg-gray-800 border-r border-gray-700 p-3 overflow-y-auto">
+                                <h4 class="text-gray-400 text-xs font-semibold mb-3">フォルダ</h4>
+                                <div class="space-y-1">
+                                    <button class="folder-select-btn w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-2" data-folder="home">
+                                        <span>🏠</span>
+                                        <span>ホーム</span>
+                                    </button>
+                                    <button class="folder-select-btn w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-2" data-folder="documents">
+                                        <span>📄</span>
+                                        <span>ドキュメント</span>
+                                    </button>
+                                    <button class="folder-select-btn w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-2" data-folder="images">
+                                        <span>🖼️</span>
+                                        <span>画像</span>
+                                    </button>
+                                    <button class="folder-select-btn w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-2" data-folder="videos">
+                                        <span>📹</span>
+                                        <span>ビデオ</span>
+                                    </button>
+                                    <button class="folder-select-btn w-full text-left px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center space-x-2" data-folder="music">
+                                        <span>🎵</span>
+                                        <span>音楽</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 右メインエリア: ファイル一覧 -->
+                            <div class="flex-grow p-4 bg-gray-900 overflow-y-auto">
+                                <div id="folder-content" class="grid grid-cols-4 gap-4">
+                                    <!-- ファイルがここに表示される -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 下部エリア: ファイル名とボタン -->
+                        <div class="p-4 bg-gray-800 border-t border-gray-700">
+                            <div class="flex items-center space-x-4 mb-3">
+                                <label class="text-gray-300 text-sm whitespace-nowrap">ファイル名:</label>
+                                <input type="text" id="save-filename" class="flex-grow bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ファイル名を入力">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button id="cancel-save" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">キャンセル</button>
+                                <button id="confirm-save" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             default:
                 return '<div class="p-4">アプリケーションが見つかりません</div>';
         }
@@ -408,6 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'settings':
                 setupSettings(appWindow);
+                break;
+            case 'save-dialog':
+                setupSaveDialog(appWindow);
                 break;
         }
     }
@@ -654,44 +754,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const noteContent = appWindow.querySelector('#note-content');
         const appId = 'desktop-note';
         
-        // デスクトップノート用の保存・ロード関数
-        const saveDesktopNote = (title, content) => {
-            const noteData = {
-                title: title,
-                content: content,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('desktop-note-content', JSON.stringify(noteData));
-        };
-        
-        const loadDesktopNote = () => {
-            const saved = localStorage.getItem('desktop-note-content');
-            if (saved) {
-                try {
-                    return JSON.parse(saved);
-                } catch (e) {
-                    return { title: '', content: '' };
-                }
-            }
-            return { title: '', content: '' };
-        };
-        
-        // 保存データをロード
-        const noteData = loadDesktopNote();
-        noteTitle.value = noteData.title || '';
-        noteContent.value = noteData.content || '';
+        // メモ帳を開いたときに中身をリセット
+        noteTitle.value = '';
+        noteContent.value = '';
         
         saveBtn.addEventListener('click', () => {
-            const title = noteTitle.value;
+            console.log('Save button clicked in desktop-note');
+            const title = noteTitle.value || 'untitled';
             const content = noteContent.value;
             
-            saveDesktopNote(title, content);
-            
-            saveBtn.style.backgroundColor = '#10b981';
-            
-            setTimeout(() => {
-                saveBtn.style.backgroundColor = '';
-            }, 2000);
+            console.log('Calling showSaveDialog with title:', title);
+            showSaveDialog(title, (folder, filename) => {
+                console.log('Save callback called with folder:', folder, 'filename:', filename);
+                const fileName = `${filename}.txt`;
+                
+                // 仮想ファイルシステムに保存
+                if (virtualFileSystem[folder]) {
+                    virtualFileSystem[folder][fileName] = {
+                        type: 'file',
+                        icon: '📄',
+                        content: content
+                    };
+                    
+                    saveBtn.style.backgroundColor = '#10b981';
+                    
+                    setTimeout(() => {
+                        saveBtn.style.backgroundColor = '';
+                    }, 2000);
+                } else {
+                    alert('保存に失敗しました');
+                }
+            });
         });
         
         const closeBtn = appWindow.querySelector('.window-close');
@@ -714,42 +807,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const saveBtn = appWindow.querySelector('.window-save');
         const appId = 'file-note';
         
-        const saveToFileNote = (title, content) => {
-            const noteData = {
-                title: title,
-                content: content,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('file-note-content', JSON.stringify(noteData));
-        };
-        
-        const loadFromFileNote = () => {
-            const saved = localStorage.getItem('file-note-content');
-            if (saved) {
-                try {
-                    return JSON.parse(saved);
-                } catch (e) {
-                    return { title: '', content: '' };
-                }
-            }
-            return { title: '', content: '' };
-        };
-        
-        const noteData = loadFromFileNote();
-        noteTitle.value = noteData.title || '';
-        noteContent.value = noteData.content || '';
+        // メモ帳を開いたときに中身をリセット
+        noteTitle.value = '';
+        noteContent.value = '';
         
         saveBtn.addEventListener('click', () => {
-            const title = noteTitle.value;
+            const title = noteTitle.value || 'untitled';
             const content = noteContent.value;
             
-            saveToFileNote(title, content);
-            
-            saveBtn.style.backgroundColor = '#10b981';
-            
-            setTimeout(() => {
-                saveBtn.style.backgroundColor = '';
-            }, 2000);
+            showSaveDialog(title, (folder, filename) => {
+                const fileName = `${filename}.txt`;
+                
+                // 仮想ファイルシステムに保存
+                if (virtualFileSystem[folder]) {
+                    virtualFileSystem[folder][fileName] = {
+                        type: 'file',
+                        icon: '📄',
+                        content: content
+                    };
+                    
+                    saveBtn.style.backgroundColor = '#10b981';
+                    
+                    setTimeout(() => {
+                        saveBtn.style.backgroundColor = '';
+                    }, 2000);
+                } else {
+                    alert('保存に失敗しました');
+                }
+            });
         });
     }
     
@@ -985,89 +1070,77 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // File Explorer Application
     function setupFileExplorer(appWindow) {
-        const noneTxtFile = appWindow.querySelector('#file-none-txt');
         const sidebarItems = appWindow.querySelectorAll('.sidebar-item');
         const folderTitle = appWindow.querySelector('#folder-title');
         const folderDescription = appWindow.querySelector('#folder-description');
         const folderContent = appWindow.querySelector('#folder-content');
         
-        // フォルダごとのコンテンツ定義
-        const folderContents = {
+        // フォルダ情報
+        const folderInfo = {
             home: {
                 title: 'ホーム',
-                description: 'ここにファイルとフォルダの内容が表示されます。',
-                files: [
-                    { icon: '📁', name: 'Nerus OS' },
-                    { icon: '📄', name: 'None.txt', id: 'file-none-txt' }
-                ]
+                description: 'ここにファイルとフォルダの内容が表示されます。'
             },
             documents: {
                 title: 'ドキュメント',
-                description: 'ドキュメントファイルが保存されています。',
-                files: [
-                    { icon: '📄', name: 'Readme.txt' },
-                    { icon: '📄', name: 'Notes.txt' },
-                    { icon: '📄', name: 'Project.txt' }
-                ]
+                description: 'ドキュメントファイルが保存されています。'
             },
             images: {
                 title: '画像',
-                description: '画像ファイルが保存されています。',
-                files: [
-                    { icon: '🖼️', name: 'screenshot.png' },
-                    { icon: '🖼️', name: 'wallpaper.jpg' },
-                    { icon: '🖼️', name: 'icon.png' }
-                ]
+                description: '画像ファイルが保存されています。'
             },
             videos: {
                 title: 'ビデオ',
-                description: 'ビデオファイルが保存されています。',
-                files: [
-                    { icon: '📹', name: 'tutorial.mp4' },
-                    { icon: '📹', name: 'demo.mp4' }
-                ]
+                description: 'ビデオファイルが保存されています。'
             },
             music: {
                 title: '音楽',
-                description: '音楽ファイルが保存されています。',
-                files: [
-                    { icon: '🎵', name: 'song1.mp3' },
-                    { icon: '🎵', name: 'song2.mp3' },
-                    { icon: '🎵', name: 'song3.mp3' }
-                ]
+                description: '音楽ファイルが保存されています。'
             }
         };
         
         // フォルダ内容を表示する関数
         const displayFolder = (folderName) => {
-            const folder = folderContents[folderName];
+            const folder = folderInfo[folderName];
             if (!folder) return;
             
             folderTitle.textContent = folder.title;
             folderDescription.textContent = folder.description;
             
             folderContent.innerHTML = '';
-            folder.files.forEach(file => {
-                const fileElement = document.createElement('div');
-                fileElement.className = 'flex flex-col items-center p-2 rounded-lg hover:bg-gray-600 cursor-pointer';
-                if (file.id) {
-                    fileElement.id = file.id;
-                }
-                fileElement.innerHTML = `
-                    <span class="text-5xl">${file.icon}</span>
-                    <span class="text-xs mt-1">${file.name}</span>
-                `;
-                folderContent.appendChild(fileElement);
-            });
             
-            // None.txtのクリックイベントを再設定
-            if (folderName === 'home') {
-                const newNoneTxtFile = folderContent.querySelector('#file-none-txt');
-                if (newNoneTxtFile) {
-                    newNoneTxtFile.addEventListener('click', () => {
-                        openApp('file-note');
+            const files = virtualFileSystem[folderName];
+            if (files) {
+                Object.keys(files).forEach(fileName => {
+                    const file = files[fileName];
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'flex flex-col items-center p-2 rounded-lg hover:bg-gray-600 cursor-pointer';
+                    fileElement.innerHTML = `
+                        <span class="text-5xl">${file.icon}</span>
+                        <span class="text-xs mt-1">${fileName}</span>
+                    `;
+                    
+                    // ファイルクリックイベント
+                    fileElement.addEventListener('click', () => {
+                        if (file.type === 'file' && fileName.endsWith('.txt')) {
+                            // テキストファイルを開く
+                            openApp('file-note');
+                            setTimeout(() => {
+                                const noteWindow = document.getElementById('file-note-window');
+                                if (noteWindow) {
+                                    const noteTitle = noteWindow.querySelector('#note-title');
+                                    const noteContent = noteWindow.querySelector('#note-content');
+                                    if (noteTitle && noteContent) {
+                                        noteTitle.value = fileName.replace('.txt', '');
+                                        noteContent.value = file.content;
+                                    }
+                                }
+                            }, 100);
+                        }
                     });
-                }
+                    
+                    folderContent.appendChild(fileElement);
+                });
             }
         };
         
@@ -1078,6 +1151,109 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayFolder(folderName);
             });
         });
+        
+        // 初期表示
+        displayFolder('home');
+    }
+    
+    // Save Dialog Application
+    function setupSaveDialog(appWindow) {
+        const folderSelectBtns = appWindow.querySelectorAll('.folder-select-btn');
+        const savePath = appWindow.querySelector('#save-path');
+        const folderContent = appWindow.querySelector('#folder-content');
+        const saveFilename = appWindow.querySelector('#save-filename');
+        const cancelBtn = appWindow.querySelector('#cancel-save');
+        const confirmBtn = appWindow.querySelector('#confirm-save');
+        
+        // フォルダの中身を表示する関数
+        const displayFolderContent = (folderName) => {
+            const files = virtualFileSystem[folderName];
+            if (!files) return;
+            
+            folderContent.innerHTML = '';
+            
+            Object.keys(files).forEach(fileName => {
+                const file = files[fileName];
+                const fileElement = document.createElement('div');
+                fileElement.className = 'flex flex-col items-center p-3 rounded-lg hover:bg-gray-700 cursor-pointer transition-colors';
+                fileElement.innerHTML = `
+                    <span class="text-4xl mb-1">${file.icon}</span>
+                    <span class="text-xs text-white text-center">${fileName}</span>
+                `;
+                
+                // ファイルをクリックしたときにファイル名を入力欄に設定
+                fileElement.addEventListener('click', () => {
+                    if (file.type === 'file') {
+                        saveFilename.value = fileName.replace('.txt', '');
+                    }
+                });
+                
+                folderContent.appendChild(fileElement);
+            });
+        };
+        
+        // フォルダ選択
+        folderSelectBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedFolder = btn.dataset.folder;
+                savePath.textContent = `/${selectedFolder}`;
+                
+                // 選択状態を更新
+                folderSelectBtns.forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.add('hover:bg-gray-700');
+                });
+                btn.classList.remove('hover:bg-gray-700');
+                btn.classList.add('bg-blue-600', 'text-white');
+                
+                // フォルダの中身を表示
+                displayFolderContent(selectedFolder);
+            });
+        });
+        
+        // キャンセル
+        cancelBtn.addEventListener('click', () => {
+            window.closeAppWindow('save-dialog');
+            currentSaveCallback = null;
+        });
+        
+        // 保存
+        confirmBtn.addEventListener('click', () => {
+            const filename = saveFilename.value.trim();
+            if (!filename) {
+                alert('ファイル名を入力してください');
+                return;
+            }
+            
+            if (currentSaveCallback) {
+                currentSaveCallback(selectedFolder, filename);
+            }
+            
+            window.closeAppWindow('save-dialog');
+            saveFilename.value = '';
+            currentSaveCallback = null;
+        });
+        
+        // ウィンドウを閉じたときの処理
+        const closeBtn = appWindow.querySelector('.window-close');
+        if (closeBtn) {
+            const newCloseBtn = closeBtn.cloneNode(true);
+            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+            
+            newCloseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                window.closeAppWindow('save-dialog');
+                currentSaveCallback = null;
+            });
+        }
+        
+        // 初期表示: documentsフォルダを選択
+        const docsBtn = appWindow.querySelector('[data-folder="documents"]');
+        if (docsBtn) {
+            docsBtn.click();
+        }
     }
     
     // Settings Application
@@ -1252,3 +1428,44 @@ document.addEventListener('DOMContentLoaded', () => {
     
     generateStartMenu();
 });
+
+// 保存ダイアログを表示する関数（グローバルスコープ）
+window.showSaveDialog = (defaultFilename = '', callback) => {
+    console.log('showSaveDialog called');
+    
+    // 既に保存ダイアログが開いている場合は閉じる
+    if (window.openWindows && window.openWindows['save-dialog']) {
+        window.closeAppWindow('save-dialog');
+    }
+    
+    currentSaveCallback = callback;
+    selectedFolder = 'documents';
+    
+    console.log('Opening save-dialog window');
+    // 保存ダイアログを開く
+    if (window.openApp) {
+        window.openApp('save-dialog');
+    }
+    
+    console.log('save-dialog window opened');
+    // ファイル名を設定
+    setTimeout(() => {
+        const dialogWindow = document.getElementById('save-dialog-window');
+        console.log('Dialog window element:', dialogWindow);
+        if (dialogWindow) {
+            const filenameInput = dialogWindow.querySelector('#save-filename');
+            
+            console.log('Filename input:', filenameInput);
+            
+            if (filenameInput) {
+                filenameInput.value = defaultFilename;
+            }
+            
+            // documentsフォルダを選択状態にする（setupSaveDialogで初期化される）
+            const docsBtn = dialogWindow.querySelector('[data-folder="documents"]');
+            if (docsBtn) {
+                docsBtn.click();
+            }
+        }
+    }, 100);
+};
