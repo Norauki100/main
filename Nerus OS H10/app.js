@@ -385,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="bg-gray-700 rounded-xl p-4">
                                 <h3 class="text-lg font-semibold mb-3">🎨 テーマ</h3>
                                 <div class="flex items-center space-x-4">
+                                    <button class="theme-btn px-4 py-2 bg-blue-900 rounded-lg hover:bg-blue-800 transition-colors" data-theme="blue">紺色（標準）</button>
                                     <button class="theme-btn px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-500 transition-colors" data-theme="purple">紫</button>
-                                    <button class="theme-btn px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-500 transition-colors" data-theme="blue">青</button>
-                                    <button class="theme-btn px-4 py-2 bg-green-600 rounded-lg hover:bg-green-500 transition-colors" data-theme="green">緑</button>
+                                    <button class="theme-btn px-4 py-2 bg-orange-600 rounded-lg hover:bg-orange-500 transition-colors" data-theme="orange">オレンジ</button>
                                 </div>
                             </div>
                             
@@ -1273,10 +1273,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         body.style.background = 'radial-gradient(circle at top left, #4a00e0, #8e2de2, #4a00e0)';
                         break;
                     case 'blue':
-                        body.style.background = 'radial-gradient(circle at top left, #0044e0, #2d8ede, #0044e0)';
+                        body.style.background = 'radial-gradient(circle at top left, #000650, #1e40af, #000650)';
                         break;
-                    case 'green':
-                        body.style.background = 'radial-gradient(circle at top left, #00e04a, #2de88e, #00e04a)';
+                    case 'orange':
+                        body.style.background = 'radial-gradient(circle at top left, #ea580c, #f97316, #ea580c)';
                         break;
                 }
                 body.style.backgroundSize = '400% 400%';
