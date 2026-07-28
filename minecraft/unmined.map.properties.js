@@ -6,7 +6,7 @@ var UnminedMapProperties = {
     imageFormat: "jpeg",
     minRegionX: -13,
     minRegionZ: -6,
-    maxRegionX: 5,
+    maxRegionX: 20,
     maxRegionZ: 9,
     worldName: "神のワールド シーズン2開幕 2026/5/11",
     background: "",
