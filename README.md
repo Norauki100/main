@@ -36,3 +36,5 @@ crayon 2とかいう改悪デザインを生み出しやがったので
 
 いいのかよくわからんけどここは実質noraukiのファイル置き場兼サイトみたいな感じです
 
+リンク集：https://norauki100.github.io/not-main/links.html
+
