@@ -10,7 +10,7 @@ https://norauki100.github.io/main/nerus-os10/Nerus-OS-H10.html
 
 
 
-https://norauki100.github.io/main/yswc/norus-n6-1.html
+https://norauki100.github.io/main/NerusCompany/norus-n6-1.html
 
 
 
