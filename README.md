@@ -1,8 +1,8 @@
-・Nerus OS H9はこちらです👇
+・Nerus OS H10はこちらです👇
 
 
 
-https://norauki100.github.io/main/NerusOSH9.html
+https://norauki100.github.io/main/nerus-os10/Nerus-OS-H10.html
 
 
 
@@ -10,7 +10,7 @@ https://norauki100.github.io/main/NerusOSH9.html
 
 
 
-https://norauki100.github.io/main/NerusCompany/norus-n6-1.html
+https://norauki100.github.io/main/yswc/norus-n6-1.html
 
 
 
@@ -35,6 +35,4 @@ crayon 2とかいう改悪デザインを生み出しやがったので
 
 
 いいのかよくわからんけどここは実質noraukiのファイル置き場兼サイトみたいな感じです
-
-リンク集：https://norauki100.github.io/not-main/links.html
 
