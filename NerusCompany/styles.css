@@ -350,3 +350,42 @@ footer p {
 .download-button:hover {
     background-color: #2980b9;
 }
+
+@media (max-width: 768px) {
+    .color-changing-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .main-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .main-content p,
+    .second-block p,
+    .third-block p,
+    .fourth-block p,
+    .fifth-block p,
+    .nyan p {
+        font-size: 1rem;
+        overflow-wrap: anywhere;
+    }
+
+    .second-block p,
+    .third-block p,
+    .fourth-block p,
+    .fifth-block p,
+    .nyan p {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .block-content {
+        box-sizing: border-box;
+    }
+
+    .section-title-bar {
+        height: auto !important;
+        min-height: 40px;
+    }
+}
