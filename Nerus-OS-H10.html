@@ -1,3 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nerus OS H10</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <style>
+/* Nerus OS H10 - Main Stylesheet */
+
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    background: radial-gradient(circle at top left, #4a00e0, #8e2de2, #4a00e0);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 入力欄だけは選択できるように戻す */
+input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* Background Gradient Animation */
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+}
+
+.window-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.window-fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+/* Window Header Drag Cursor */
+.window-header {
+    cursor: move;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+/* Autocomplete List */
+.autocomplete-list {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #4B5563;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 60;
+    top: calc(100% + 5px);
+}
+
+.autocomplete-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: #FFFFFF;
+}
+
+.autocomplete-item:hover {
+    background-color: #6B7280;
+}
+
+/* Clock Font */
+#clock {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+/* Start Menu */
+#start-menu {
+    position: fixed;
+    left: 10px;
+    bottom: 80px;
+    width: 450px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    border-radius: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    z-index: 60;
+    pointer-events: none;
+}
+
+#start-menu.start-menu-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* File Explorer Sidebar */
+.sidebar {
+    width: 250px;
+    transition: width 0.3s ease-out;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .sidebar-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-item svg {
+    flex-shrink: 0;
+}
+
+.sidebar-item .sidebar-text {
+    flex-grow: 1;
+    margin-left: 8px;
+}
+
+/* Custom Blur Effect */
+.backdrop-blur-50-percent {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Custom Color Picker */
+input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-moz-color-swatch-wrapper {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+}
+
+input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+    width: 48px;
+    height: 48px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2d3748;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #606f8a;
+}
+
+/* Taskbar Icons */
+.taskbar-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.taskbar-icon.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #fff;
+}
+
+/* Touch Device Taskbar Spacing */
+@media (max-width: 768px) {
+    .taskbar-icon {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+}
+
+/* Browser Home Screen */
+.browser-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background-color: #1f2937;
+}
+
+.home-search-container {
+    width: 80%;
+    max-width: 600px;
+}
+
+.home-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #374151;
+    color: #ffffff;
+    border-radius: 2rem;
+    border: 2px solid transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.home-search-input:focus {
+    border-color: #4A90E2;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    max-width: 600px;
+    margin-top: 2rem;
+}
+
+.home-app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.home-app-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.home-app-icon .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.home-app-icon .label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Home Screen Search & Autocomplete */
+.browser-home .home-search-container {
+    position: relative;
+}
+
+.browser-home .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* Window Maximized State */
+.maximized {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+/* Window Minimized State */
+.minimized {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Spin Animation for Refresh Button */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 0.5s linear;
+}
+
+</style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen" style="background: radial-gradient(circle at top left, #000650, #1e40af, #000650); background-size: 400% 400%;">
+
+    <!-- Desktop Icons Container -->
+    <div id="desktop-icons" class="fixed top-0 left-0 p-5 z-10 grid gap-x-3 gap-y-4" style="grid-template-columns: repeat(4, 6.5rem);">
+        <div id="nerus-browser" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-browser')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-800 flex items-center justify-center text-4xl shadow-lg">🌐</div>
+            <p class="text-sm font-semibold leading-tight">Nerus Browser</p>
+        </div>
+        <div id="desktop-note" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('desktop-note')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-green-400 to-green-700 flex items-center justify-center text-4xl shadow-lg">📝</div>
+            <p class="text-sm font-semibold leading-tight">omg note</p>
+        </div>
+        <div id="nerus-calculator" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-calculator')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-red-400 to-red-700 flex items-center justify-center text-4xl shadow-lg">🧮</div>
+            <p class="text-sm font-semibold leading-tight">Nerus Calculator</p>
+        </div>
+        <div id="nerus-paint-tool" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-paint-tool')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-yellow-300 to-orange-500 flex items-center justify-center text-4xl shadow-lg">🖌️</div>
+            <p class="text-sm font-semibold leading-tight">Nerus Paint Tool</p>
+        </div>
+        <div id="file-explorer" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('file-explorer')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-700 flex items-center justify-center text-4xl shadow-lg">📁</div>
+            <p class="text-sm font-semibold leading-tight">File Explorer</p>
+        </div>
+        <div id="nerus-camera" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-camera')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-gray-600 to-gray-900 flex items-center justify-center text-4xl shadow-lg">📷</div>
+            <p class="text-sm font-semibold leading-tight">カメラ</p>
+        </div>
+        <div id="nerus-translate" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('nerus-translate')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-4xl shadow-lg">🔤</div>
+            <p class="text-sm font-semibold leading-tight">翻訳</p>
+        </div>
+        <div id="omg-fortune" class="app-icon flex flex-col items-center text-center rounded-xl p-2 cursor-pointer hover:bg-white hover:bg-opacity-10 transition-all duration-200" onclick="openApp('omg-fortune')">
+            <div class="app-tile w-16 h-16 mb-1.5 rounded-2xl bg-gradient-to-br from-fuchsia-300 to-purple-500 flex items-center justify-center text-4xl shadow-lg">🔮</div>
+            <p class="text-sm font-semibold leading-tight">omg 占い5</p>
+        </div>
+    </div>
+
+    <!-- Application Window Container -->
+    <div id="app-window-container" class="fixed inset-0 pointer-events-none p-4 flex flex-col items-center justify-center z-20"></div>
+
+    <!-- Taskbar -->
+    <div id="taskbar" class="fixed bottom-2 left-2 right-2 h-16 rounded-2xl bg-gray-900 bg-opacity-70 backdrop-blur-50-percent border border-white border-opacity-20 shadow-2xl flex items-center justify-between px-4 z-50">
+        <!-- Left: Start Button, Search Bar, App Icons -->
+        <div class="flex items-center space-x-4">
+            <!-- Start Button -->
+            <button id="start-button" class="group w-12 h-12 flex items-center justify-center rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200">
+                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Search Bar -->
+            <div class="relative">
+                <div class="relative flex items-center">
+                    <input type="text" 
+                           id="taskbar-search" 
+                           placeholder="検索" 
+                           class="w-48 bg-gray-700 bg-opacity-70 text-white px-3 py-1.5 rounded-full border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-10 text-sm transition-all duration-200"
+                           style="min-width: 150px;">
+                    <svg class="w-4 h-4 text-gray-400 absolute left-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Open App Icons -->
+            <div id="taskbar-icons" class="flex items-center space-x-2">
+                <!-- App icons will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Right: Date & Time -->
+        <div class="flex flex-col items-end pr-2">
+            <div id="clock" class="text-white text-sm font-medium text-right">00:00:00</div>
+            <div id="date" class="text-white text-xs text-gray-300">2023/01/01 (月)</div>
+        </div>
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu" class="bg-gray-800 bg-opacity-70 backdrop-blur-50-percent shadow-2xl p-6 flex-col">
+        <!-- Search Bar -->
+        <div class="relative mb-6">
+            <div class="relative">
+                <input type="text" placeholder="検索" class="w-full bg-gray-700 bg-opacity-50 text-white px-12 py-3 rounded-full border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-12">
+                <svg class="w-5 h-5 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- All Apps -->
+        <div class="mb-4">
+            <h3 class="text-gray-300 text-sm font-medium mb-3">すべてのアプリ</h3>
+            <div class="grid grid-cols-4 gap-3 overflow-y-auto" style="max-height: 400px;">
+                <!-- App 1 - Nerus Browser -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-browser')">
+                    <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🌐</div>
+                    <span class="text-xs text-white">Nerus Browser</span>
+                </div>
+                <!-- App 2 - omg note -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('desktop-note')">
+                    <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📝</div>
+                    <span class="text-xs text-white">omg note</span>
+                </div>
+                <!-- App 3 - File Explorer -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('file-explorer')">
+                    <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📁</div>
+                    <span class="text-xs text-white">File Explorer</span>
+                </div>
+                <!-- App 4 - Paint Tool -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-paint-tool')">
+                    <div class="w-10 h-10 bg-yellow-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🎨</div>
+                    <span class="text-xs text-white">Paint Tool</span>
+                </div>
+                <!-- App 5 - Calculator -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-calculator')">
+                    <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">📊</div>
+                    <span class="text-xs text-white">Calculator</span>
+                </div>
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-camera')">
+                    <div class="w-10 h-10 bg-gray-700 rounded-xl flex items-center justify-center text-white text-xl mb-1">📷</div>
+                    <span class="text-xs text-white">カメラ</span>
+                </div>
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('nerus-translate')">
+                    <div class="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🔤</div>
+                    <span class="text-xs text-white">翻訳</span>
+                </div>
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('omg-fortune')">
+                    <div class="w-10 h-10 bg-fuchsia-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">🔮</div>
+                    <span class="text-xs text-white">omg 占い5</span>
+                </div>
+                <!-- App 6 - Settings -->
+                <div class="flex flex-col items-center text-center p-3 rounded-xl hover:bg-gray-700 transition-colors cursor-pointer" onclick="openApp('settings')">
+                    <div class="w-10 h-10 bg-gray-500 rounded-xl flex items-center justify-center text-white text-xl mb-1">⚙️</div>
+                    <span class="text-xs text-white">設定</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Info & Power -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-lg font-bold text-gray-800">U</div>
+                <div>
+                    <p class="font-semibold text-white text-sm">Guest User</p>
+                </div>
+            </div>
+            <button class="p-2 rounded-full hover:bg-gray-700 transition-colors">
+                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Custom JavaScript -->
+    <script>
 // Nerus OS H10 - Main Application JavaScript
 
 // Global variables for save dialog
@@ -9,13 +530,17 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('none-txt-content');
     localStorage.removeItem('omg-note-content');
     
+    // ドラッグ（文字・画像の持ち上げ）を無効化
+    document.addEventListener('dragstart', (e) => {
+        if (!e.target.closest?.('input, textarea')) e.preventDefault();
+    });
+    
     // DOM Elements
     const appWindowContainer = document.getElementById('app-window-container');
     const taskbarIcons = document.getElementById('taskbar-icons');
     const clock = document.getElementById('clock');
     const startButton = document.getElementById('start-button');
     const startMenu = document.getElementById('start-menu');
-    const startMenuAppList = startMenu.querySelector('.space-y-2');
     
     // State Management
     let zIndexCounter = 30;
@@ -59,6 +584,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'nerus-calculator', name: 'Nerus Calculator', icon: '🧮' },
         { id: 'nerus-paint-tool', name: 'Nerus Paint Tool', icon: '🖌️' },
         { id: 'file-explorer', name: 'File Explorer', icon: '📁' },
+        { id: 'nerus-camera', name: 'カメラ', icon: '📷' },
+        { id: 'nerus-translate', name: '翻訳', icon: '🔤' },
+        { id: 'omg-fortune', name: 'omg 占い5', icon: '🔮' },
+        { id: 'image-viewer', name: '画像ビューア', icon: '🖼️' },
         { id: 'settings', name: '設定', icon: '⚙️' },
         { id: 'save-dialog', name: '名前を付けて保存', icon: '💾' }
     ];
@@ -106,6 +635,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.closeAppWindow = (appId) => {
         const appWindow = document.getElementById(`${appId}-window`);
         if (appWindow) {
+            if (openWindows[appId] && typeof openWindows[appId].onClose === 'function') {
+                openWindows[appId].onClose();
+            }
             appWindow.classList.add('window-fade-out');
             appWindow.addEventListener('animationend', () => {
                 appWindow.remove();
@@ -190,7 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
             appWindow.id = `${app.id}-window`;
             appWindow.dataset.appId = app.id;
             
-            const isCalculator = appId === 'nerus-calculator';
+            const isCalculator = ['nerus-calculator', 'omg-fortune'].includes(appId);
             const widthClass = isCalculator ? 'w-5/12' : 'w-11/12';
             appWindow.className = `app-window fixed ${widthClass} h-5/6 max-w-7xl max-h-[calc(100vh-100px)] rounded-xl shadow-2xl overflow-hidden backdrop-blur-50-percent transition-all duration-300 ease-out flex flex-col pointer-events-auto border border-white border-opacity-20 window-fade-in`;
             
@@ -407,6 +939,56 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 `;
+            case 'nerus-camera':
+                return `
+                    <div class="flex flex-col h-full items-center">
+                        <div class="relative flex-grow w-full bg-black rounded-xl overflow-hidden flex items-center justify-center">
+                            <video id="camera-video" autoplay playsinline muted class="max-w-full max-h-full" style="transform: scaleX(-1);"></video>
+                            <p id="camera-status" class="absolute text-gray-300 text-center px-4">カメラを起動しています…</p>
+                            <div id="camera-flash" class="absolute inset-0 bg-white pointer-events-none" style="opacity:0; transition: opacity 0.3s;"></div>
+                        </div>
+                        <div class="flex items-center justify-between w-full mt-3">
+                            <img id="camera-last-photo" class="w-14 h-14 rounded-lg object-cover border border-gray-600 bg-gray-700 cursor-pointer" style="visibility:hidden;" title="最後に撮った写真">
+                            <button id="camera-shutter" class="w-16 h-16 rounded-full bg-white border-4 border-gray-400 hover:bg-gray-200 transition-colors disabled:opacity-40" title="撮影" disabled></button>
+                            <div class="w-14"></div>
+                        </div>
+                        <p id="camera-saved" class="text-sm text-green-300 mt-2 h-5"></p>
+                    </div>
+                `;
+            case 'nerus-translate':
+                return `
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <select id="translate-from" class="translate-lang flex-1 bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                            <button id="translate-swap" class="px-3 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors" title="入れ替え">⇄</button>
+                            <select id="translate-to" class="translate-lang flex-1 bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                        <div class="flex flex-col md:flex-row flex-grow gap-3 min-h-0">
+                            <textarea id="translate-input" placeholder="翻訳したい文章を入力" class="flex-1 bg-gray-900 bg-opacity-70 text-white p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            <div id="translate-output" class="flex-1 bg-gray-900 bg-opacity-70 text-white p-3 rounded-lg overflow-auto whitespace-pre-wrap" style="user-select:text; -webkit-user-select:text;"></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-3">
+                            <span id="translate-engine" class="text-xs text-gray-400"></span>
+                            <button id="translate-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:opacity-50">翻訳</button>
+                        </div>
+                    </div>
+                `;
+            case 'omg-fortune':
+                return `
+                    <div class="flex flex-col h-full items-center justify-center text-center">
+                        <div id="fortune-ball" class="text-8xl mb-4">🔮</div>
+                        <p class="text-gray-300 mb-2">今日の運勢は…</p>
+                        <div id="fortune-result" class="text-3xl font-bold mb-8 min-h-[2.5rem] px-2">？？？</div>
+                        <button id="fortune-button" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-10 rounded-full text-lg transition-colors disabled:opacity-50">占う</button>
+                    </div>
+                `;
+            case 'image-viewer':
+                return `
+                    <div class="flex flex-col h-full items-center justify-center bg-black rounded-lg">
+                        <img id="image-viewer-img" class="max-w-full max-h-full object-contain">
+                        <p id="image-viewer-empty" class="text-gray-400 hidden">この画像には中身がありません</p>
+                    </div>
+                `;
             case 'save-dialog':
                 return `
                     <div class="flex flex-col h-full">
@@ -508,6 +1090,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'save-dialog':
                 setupSaveDialog(appWindow);
+                break;
+            case 'nerus-camera':
+                setupCamera(appWindow);
+                break;
+            case 'nerus-translate':
+                setupTranslate(appWindow);
+                break;
+            case 'omg-fortune':
+                setupFortune(appWindow);
                 break;
         }
     }
@@ -1100,9 +1691,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // フォルダ内容を表示する関数
+        let currentFolder = 'home';
         const displayFolder = (folderName) => {
             const folder = folderInfo[folderName];
             if (!folder) return;
+            currentFolder = folderName;
             
             folderTitle.textContent = folder.title;
             folderDescription.textContent = folder.description;
@@ -1122,7 +1715,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // ファイルクリックイベント
                     fileElement.addEventListener('click', () => {
-                        if (file.type === 'file' && fileName.endsWith('.txt')) {
+                        if (file.type === 'file' && /\.(png|jpe?g)$/i.test(fileName)) {
+                            openImageViewer(fileName, file.content);
+                        } else if (file.type === 'file' && fileName.endsWith('.txt')) {
                             // テキストファイルを開く
                             openApp('file-note');
                             setTimeout(() => {
@@ -1151,6 +1746,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayFolder(folderName);
             });
         });
+        
+        // ファイルが増えたら表示を更新
+        const onVfsChange = () => displayFolder(currentFolder);
+        window.addEventListener('vfs-change', onVfsChange);
+        openWindows['file-explorer'].onClose = () => window.removeEventListener('vfs-change', onVfsChange);
         
         // 初期表示
         displayFolder('home');
@@ -1256,6 +1856,234 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Image Viewer
+    function openImageViewer(fileName, dataUrl) {
+        if (openWindows['image-viewer']) closeAppWindowNow('image-viewer');
+        openApp('image-viewer');
+        const viewer = document.getElementById('image-viewer-window');
+        const title = viewer.querySelector('.window-header .font-semibold');
+        if (title) title.textContent = fileName;
+        const img = viewer.querySelector('#image-viewer-img');
+        if (dataUrl) {
+            img.src = dataUrl;
+        } else {
+            img.classList.add('hidden');
+            viewer.querySelector('#image-viewer-empty').classList.remove('hidden');
+        }
+    }
+    
+    // アニメーションなしで即座に閉じる（開き直し用）
+    function closeAppWindowNow(appId) {
+        const w = openWindows[appId];
+        if (!w) return;
+        if (typeof w.onClose === 'function') w.onClose();
+        w.window.remove();
+        document.getElementById(`taskbar-icon-${appId}`)?.remove();
+        delete openWindows[appId];
+    }
+    
+    // Camera Application
+    function setupCamera(appWindow) {
+        const video = appWindow.querySelector('#camera-video');
+        const status = appWindow.querySelector('#camera-status');
+        const shutter = appWindow.querySelector('#camera-shutter');
+        const flash = appWindow.querySelector('#camera-flash');
+        const lastPhoto = appWindow.querySelector('#camera-last-photo');
+        const savedMsg = appWindow.querySelector('#camera-saved');
+        let stream = null;
+        let closed = false;
+        
+        openWindows['nerus-camera'].onClose = () => {
+            closed = true;
+            if (stream) stream.getTracks().forEach(t => t.stop());
+        };
+        
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            status.textContent = 'このブラウザではカメラが使えません';
+            return;
+        }
+        
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(s => {
+                if (closed) { s.getTracks().forEach(t => t.stop()); return; }
+                stream = s;
+                video.srcObject = s;
+                status.classList.add('hidden');
+                shutter.disabled = false;
+            })
+            .catch(err => {
+                status.textContent = err.name === 'NotAllowedError'
+                    ? 'カメラの使用が許可されませんでした'
+                    : 'カメラが見つからないか、起動できませんでした';
+            });
+        
+        shutter.addEventListener('click', () => {
+            if (!stream || !video.videoWidth) return;
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            // プレビューと同じく左右反転して保存
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+            const dataUrl = canvas.toDataURL('image/png');
+            
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            let name = `photo_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+            let fileName = `${name}.png`;
+            for (let i = 2; virtualFileSystem.images[fileName]; i++) fileName = `${name}_${i}.png`;
+            virtualFileSystem.images[fileName] = { type: 'file', icon: '🖼️', content: dataUrl };
+            window.dispatchEvent(new Event('vfs-change'));
+            
+            flash.style.opacity = '0.8';
+            setTimeout(() => { flash.style.opacity = '0'; }, 100);
+            lastPhoto.src = dataUrl;
+            lastPhoto.style.visibility = 'visible';
+            lastPhoto.onclick = () => openImageViewer(fileName, dataUrl);
+            savedMsg.textContent = `画像フォルダに「${fileName}」を保存しました`;
+        });
+    }
+    
+    // Translate Application
+    function setupTranslate(appWindow) {
+        const fromSel = appWindow.querySelector('#translate-from');
+        const toSel = appWindow.querySelector('#translate-to');
+        const swapBtn = appWindow.querySelector('#translate-swap');
+        const input = appWindow.querySelector('#translate-input');
+        const output = appWindow.querySelector('#translate-output');
+        const button = appWindow.querySelector('#translate-button');
+        const engineLabel = appWindow.querySelector('#translate-engine');
+        
+        // [Chrome用コード, MyMemory用コード, 表示名]
+        const languages = [
+            ['ja', 'ja', '日本語'], ['en', 'en', '英語'], ['zh', 'zh-CN', '中国語（簡体）'],
+            ['zh-Hant', 'zh-TW', '中国語（繁体）'], ['ko', 'ko', '韓国語'], ['fr', 'fr', 'フランス語'],
+            ['de', 'de', 'ドイツ語'], ['es', 'es', 'スペイン語'], ['it', 'it', 'イタリア語'],
+            ['pt', 'pt', 'ポルトガル語'], ['ru', 'ru', 'ロシア語'], ['ar', 'ar', 'アラビア語'],
+            ['hi', 'hi', 'ヒンディー語'], ['th', 'th', 'タイ語'], ['vi', 'vi', 'ベトナム語'],
+            ['id', 'id', 'インドネシア語'], ['tr', 'tr', 'トルコ語'], ['nl', 'nl', 'オランダ語'],
+            ['pl', 'pl', 'ポーランド語'], ['uk', 'uk', 'ウクライナ語']
+        ];
+        [fromSel, toSel].forEach(sel => {
+            languages.forEach(([code, , label]) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = label;
+                sel.appendChild(opt);
+            });
+        });
+        fromSel.value = 'ja';
+        toSel.value = 'en';
+        
+        swapBtn.addEventListener('click', () => {
+            [fromSel.value, toSel.value] = [toSel.value, fromSel.value];
+            if (output.textContent) {
+                input.value = output.textContent;
+                output.textContent = '';
+            }
+        });
+        
+        // ① Chrome内蔵の翻訳（オフライン可・Chromeのみ）
+        // 応答がないときは null を返してMyMemoryに切り替える
+        const withTimeout = (promise, ms) => Promise.race([
+            promise,
+            new Promise(resolve => setTimeout(() => resolve(null), ms))
+        ]);
+        
+        async function translateWithChrome(text, from, to) {
+            if (!('Translator' in self)) return null;
+            const availability = await withTimeout(Translator.availability({ sourceLanguage: from, targetLanguage: to }), 3000);
+            if (!availability || availability === 'unavailable') return null;
+            if (availability !== 'available') engineLabel.textContent = '翻訳データをダウンロード中…';
+            const translator = await withTimeout(Translator.create({ sourceLanguage: from, targetLanguage: to }), 60000);
+            if (!translator) return null;
+            return await withTimeout(translator.translate(text), 15000);
+        }
+        
+        // ② MyMemory API（キー不要・ネット必須・1回500文字まで）
+        async function translateWithMyMemory(text, from, to) {
+            const code = c => languages.find(l => l[0] === c)[1];
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${code(from)}|${code(to)}`;
+            const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+            const data = await res.json();
+            if (data.responseStatus !== 200 && data.responseStatus !== '200') {
+                throw new Error(data.responseDetails || '翻訳に失敗しました');
+            }
+            return data.responseData.translatedText;
+        }
+        
+        async function translate() {
+            const text = input.value.trim();
+            const from = fromSel.value;
+            const to = toSel.value;
+            if (!text) return;
+            if (from === to) { output.textContent = text; return; }
+            
+            button.disabled = true;
+            output.textContent = '翻訳中…';
+            try {
+                let result = null;
+                try {
+                    result = await translateWithChrome(text, from, to);
+                    if (result !== null) engineLabel.textContent = 'Chrome内蔵の翻訳';
+                } catch (e) {
+                    result = null;
+                }
+                if (result === null) {
+                    if (text.length > 500) throw new Error('この翻訳方法では1回500文字までです');
+                    result = await translateWithMyMemory(text, from, to);
+                    engineLabel.textContent = 'MyMemory で翻訳';
+                }
+                output.textContent = result;
+            } catch (e) {
+                output.textContent = '';
+                engineLabel.textContent = (e.message === 'Failed to fetch' || e.name === 'TimeoutError')
+                    ? '翻訳サーバーにつながりませんでした'
+                    : e.message;
+            } finally {
+                button.disabled = false;
+            }
+        }
+        
+        button.addEventListener('click', translate);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) translate();
+        });
+    }
+    
+    // omg 占い5
+    function setupFortune(appWindow) {
+        const results = [
+            '大吉', '大大吉', 'とてつもなく大吉', '普通です', '吉', '中吉', '小吉', '凶', '大凶',
+            '凶だが心配しなくていい', '吉だが用心せよ', '3時間だけ運がいい', '12時間だけ運がいい',
+            '12時間だけ運が悪い', '1時間だけ運が悪い', '1回だけいいことが起きる', '平凡な日々が来るだけ'
+        ];
+        const ball = appWindow.querySelector('#fortune-ball');
+        const resultEl = appWindow.querySelector('#fortune-result');
+        const button = appWindow.querySelector('#fortune-button');
+        const pick = () => results[Math.floor(Math.random() * results.length)];
+        
+        button.addEventListener('click', () => {
+            button.disabled = true;
+            let count = 0;
+            // ルーレットのように結果を切り替えてから止める
+            const timer = setInterval(() => {
+                resultEl.textContent = pick();
+                ball.style.transform = `rotate(${(count % 2 ? -1 : 1) * 10}deg)`;
+                count++;
+                if (count >= 15) {
+                    clearInterval(timer);
+                    ball.style.transform = '';
+                    resultEl.textContent = pick();
+                    button.disabled = false;
+                    button.textContent = 'もう一度占う';
+                }
+            }, 80);
+        });
+    }
+    
     // Settings Application
     function setupSettings(appWindow) {
         const themeBtns = appWindow.querySelectorAll('.theme-btn');
@@ -1327,6 +2155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 offsetX = e.clientX - appWindow.getBoundingClientRect().left;
                 offsetY = e.clientY - appWindow.getBoundingClientRect().top;
                 appWindow.style.transition = 'none';
+                e.preventDefault();
             }
         });
         
@@ -1402,20 +2231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateDateTime, 1000);
     updateDateTime();
     
-    // Start Menu Generation
-    function generateStartMenu() {
-        apps.forEach(app => {
-            const startMenuItem = document.createElement('div');
-            startMenuItem.className = 'flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200';
-            startMenuItem.innerHTML = `<span class="text-xl">${app.icon}</span><p class="font-medium text-white">${app.name}</p>`;
-            startMenuItem.onclick = () => {
-                openApp(app.id);
-                startMenu.classList.remove('start-menu-active');
-            };
-            startMenuAppList.appendChild(startMenuItem);
-        });
-    }
-    
     startButton.onclick = () => {
         startMenu.classList.toggle('start-menu-active');
     };
@@ -1425,8 +2240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startMenu.classList.remove('start-menu-active');
         }
     });
-    
-    generateStartMenu();
+
 });
 
 // 保存ダイアログを表示する関数（グローバルスコープ）
@@ -1469,3 +2283,7 @@ window.showSaveDialog = (defaultFilename = '', callback) => {
         }
     }, 100);
 };
+
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 
 
-https://norauki100.github.io/main/nerus-os10/Nerus-OS-H10.html
+https://norauki100.github.io/main/Nerus-OS-H10.html
 
 
 
