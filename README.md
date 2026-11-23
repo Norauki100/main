@@ -6,11 +6,11 @@ https://norauki100.github.io/main/NerusCompany/norus-n6-1.html
 
 
 
-Nerus OSのHTMLをﾊﾞｲﾌﾞｺｰﾃﾞｨﾝｸﾞで作ってたんですけど、私の指示がへたくそすぎて
+**・Nerus OS H10の後継、Alca OSだよ👇**
 
-完成した作品があまりにも屈辱的てうんこ作品になったので廃止します。
 
-Nerus OSの名前をこのゴミに使いたくないので次回作は別の名前で出します！
+
+https://norauki100.github.io/main/Alca-OS
 
 
 
