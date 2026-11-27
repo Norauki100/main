@@ -1,0 +1,84 @@
+registerApp({
+    id: 'alca-translate',
+    name: '翻訳',
+    size: [860, 540],
+    minSize: [480, 340],
+    open(win) {
+        const languages = [
+            ['ja', 'ja', '日本語'], ['en', 'en', '英語'], ['zh', 'zh-CN', '中国語（簡体）'],
+            ['zh-Hant', 'zh-TW', '中国語（繁体）'], ['ko', 'ko', '韓国語'], ['fr', 'fr', 'フランス語'],
+            ['de', 'de', 'ドイツ語'], ['es', 'es', 'スペイン語'], ['it', 'it', 'イタリア語'],
+            ['pt', 'pt', 'ポルトガル語'], ['ru', 'ru', 'ロシア語'], ['ar', 'ar', 'アラビア語'],
+            ['hi', 'hi', 'ヒンディー語'], ['th', 'th', 'タイ語'], ['vi', 'vi', 'ベトナム語'],
+            ['id', 'id', 'インドネシア語'], ['tr', 'tr', 'トルコ語'], ['nl', 'nl', 'オランダ語'],
+            ['pl', 'pl', 'ポーランド語'], ['uk', 'uk', 'ウクライナ語'],
+        ];
+        const opts = languages.map(([c, , l]) => `<option value="${c}">${l}</option>`).join('');
+        win.body.innerHTML = `<div class="app-fill">
+            <div class="translate-langs">
+                <select class="field from">${opts}</select>
+                <button class="icon-btn swap" title="入れ替え">${Glyph.swap}</button>
+                <select class="field to">${opts}</select>
+            </div>
+            <div class="translate-panes">
+                <textarea class="field input" placeholder="翻訳したい文章を入力（Ctrl+Enterで翻訳）"></textarea>
+                <div class="translate-out"></div>
+            </div>
+            <div class="translate-foot"><span class="engine"></span><button class="btn primary go">翻訳</button></div>
+        </div>`;
+        const q = s => win.body.querySelector(s);
+        const from = q('.from'), to = q('.to'), input = q('.input'), out = q('.translate-out'), btn = q('.go'), engine = q('.engine');
+        from.value = 'ja'; to.value = 'en';
+        q('.swap').onclick = () => {
+            [from.value, to.value] = [to.value, from.value];
+            if (out.textContent) { input.value = out.textContent; out.textContent = ''; }
+        };
+        const withTimeout = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(null), ms))]);
+        async function viaChrome(text, f, t) {
+            if (!('Translator' in self)) return null;
+            const av = await withTimeout(Translator.availability({ sourceLanguage: f, targetLanguage: t }), 3000);
+            if (!av || av === 'unavailable') return null;
+            if (av !== 'available') engine.textContent = '翻訳データをダウンロード中…';
+            const tr = await withTimeout(Translator.create({ sourceLanguage: f, targetLanguage: t }), 60000);
+            if (!tr) return null;
+            return await withTimeout(tr.translate(text), 15000);
+        }
+        async function viaMyMemory(text, f, t) {
+            if (!Torda.allowed('netTranslate')) {
+                Torda.record('翻訳', 'MyMemory に文章を送ろうとしたので止めました', false);
+                throw new Error('Alca Torda で、翻訳の文章を外に送るのがオフになっています');
+            }
+            Torda.record('翻訳', `MyMemory（api.mymemory.translated.net）に ${text.length} 文字を送りました`, true);
+            const code = c => languages.find(l => l[0] === c)[1];
+            const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${code(f)}|${code(t)}`, { signal: AbortSignal.timeout(10000) });
+            const data = await res.json();
+            if (String(data.responseStatus) !== '200') throw new Error(data.responseDetails || '翻訳に失敗しました');
+            return data.responseData.translatedText;
+        }
+        async function translate() {
+            const text = input.value.trim();
+            if (!text) return;
+            if (from.value === to.value) { out.textContent = text; return; }
+            btn.disabled = true;
+            out.textContent = '翻訳中…';
+            engine.textContent = '';
+            try {
+                let r = null;
+                try { r = await viaChrome(text, from.value, to.value); if (r !== null) engine.textContent = 'Chrome内蔵の翻訳'; } catch (e) { r = null; }
+                if (r === null) {
+                    if (text.length > 500) throw new Error('この翻訳方法では1回500文字までです');
+                    r = await viaMyMemory(text, from.value, to.value);
+                    engine.textContent = 'MyMemory で翻訳';
+                }
+                out.textContent = r;
+            } catch (e) {
+                out.textContent = '';
+                engine.textContent = (e.message === 'Failed to fetch' || e.name === 'TimeoutError') ? '翻訳サーバーにつながりませんでした' : e.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        btn.onclick = translate;
+        input.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) translate(); });
+    },
+});

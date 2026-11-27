@@ -1,0 +1,37 @@
+registerApp({
+    id: 'omg-fortune',
+    name: 'omg 占い5',
+    size: [400, 480],
+    minSize: [320, 400],
+    open(win) {
+        const results = [
+            '大吉', '大大吉', 'とてつもなく大吉', '普通です', '吉', '中吉', '小吉', '凶', '大凶',
+            '凶だが心配しなくていい', '吉だが用心せよ', '3時間だけ運がいい', '12時間だけ運がいい',
+            '12時間だけ運が悪い', '1時間だけ運が悪い', '1回だけいいことが起きる', '平凡な日々が来るだけ',
+        ];
+        win.body.innerHTML = `<div class="fortune">
+            <img src="${Apps['omg-fortune'].icon}" alt="">
+            <p class="lead">今日の運勢は…</p>
+            <p class="result">？？？</p>
+            <button class="btn primary go">占う</button>
+        </div>`;
+        const img = win.body.querySelector('img'), result = win.body.querySelector('.result'), btn = win.body.querySelector('.go');
+        const pick = () => results[Math.floor(Math.random() * results.length)];
+        btn.onclick = () => {
+            btn.disabled = true;
+            let n = 0;
+            const timer = setInterval(() => {
+                result.textContent = pick();
+                img.style.transform = `rotate(${n % 2 ? -6 : 6}deg)`;
+                if (++n >= 15) {
+                    clearInterval(timer);
+                    img.style.transform = '';
+                    result.textContent = pick();
+                    btn.disabled = false;
+                    btn.textContent = 'もう一度占う';
+                }
+            }, 80);
+            win.cleanups.push(() => clearInterval(timer));
+        };
+    },
+});

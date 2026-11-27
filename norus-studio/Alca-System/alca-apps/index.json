@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "apps": [
+    {
+      "id": "omg-fortune",
+      "name": "omg 占い5",
+      "version": "26.11.1.0",
+      "author": "norus-studio",
+      "summary": "今日の運勢を占う",
+      "icon": "omg-fortune/icon.svg"
+    },
+    {
+      "id": "alca-translate",
+      "name": "翻訳",
+      "version": "26.11.1.0",
+      "author": "norus-studio",
+      "summary": "文章をほかの言葉に翻訳する",
+      "icon": "alca-translate/icon.svg"
+    }
+  ]
+}

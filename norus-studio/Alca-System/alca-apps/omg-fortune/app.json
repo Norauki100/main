@@ -1,0 +1,22 @@
+{
+  "id": "omg-fortune",
+  "name": "omg 占い5",
+  "version": "26.11.1.0",
+  "author": "norus-studio",
+  "summary": "今日の運勢を占う",
+  "description": "ボタンを押すと、今日の運勢を占います。",
+  "icon": "icon.svg",
+  "main": "omg-fortune.nrs",
+  "style": "style.css",
+  "files": [
+    "omg-fortune.nrs",
+    "style.css",
+    "icon.svg"
+  ],
+  "screenshots": [],
+  "permissions": [],
+  "minAlca": "0.1.5",
+  "changes": {
+    "26.11.1.0": "Delta Store で配るようになった"
+  }
+}

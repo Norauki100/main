@@ -1,0 +1,24 @@
+{
+  "id": "alca-translate",
+  "name": "翻訳",
+  "version": "26.11.1.0",
+  "author": "norus-studio",
+  "summary": "文章をほかの言葉に翻訳する",
+  "description": "20の言葉に翻訳できます。\nChrome では、Chrome に入っている翻訳を使います（インターネットなしでも使えることがあります）。\nそれ以外では MyMemory（api.mymemory.translated.net）に文章を送って翻訳します（1回500文字まで）。",
+  "icon": "icon.svg",
+  "main": "alca-translate.nrs",
+  "style": "style.css",
+  "files": [
+    "alca-translate.nrs",
+    "style.css",
+    "icon.svg"
+  ],
+  "screenshots": [],
+  "permissions": [
+    "netTranslate"
+  ],
+  "minAlca": "0.1.5",
+  "changes": {
+    "26.11.1.0": "Delta Store で配るようになった"
+  }
+}

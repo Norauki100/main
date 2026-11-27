@@ -1,0 +1,7 @@
+.translate-langs { display: flex; align-items: center; gap: 8px; padding: 0 14px 12px; }
+.translate-langs select { flex: 1; }
+.translate-panes { flex-grow: 1; min-height: 0; display: flex; gap: 12px; padding: 0 14px; }
+.translate-panes > * { flex: 1; min-width: 0; }
+.translate-out { background: var(--field); border-radius: 10px; padding: 10px 12px; line-height: 1.7; overflow: auto; white-space: pre-wrap; user-select: text; -webkit-user-select: text; }
+.translate-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 14px; }
+.translate-foot span { font-size: 12px; color: var(--sub); }
