@@ -1,0 +1,27 @@
+{
+  "id": "alca-qr",
+  "name": "QRコード",
+  "version": "26.11.1.0",
+  "author": "norus-studio",
+  "summary": "QRコードを作る・読み取る",
+  "description": "文字やURLから QRコードを作って、画像として保存できます。\nカメラや画像から QRコードを読み取れます。\n\nQRコードは株式会社デンソーウェーブの登録商標です。",
+  "icon": "icon.svg",
+  "main": "alca-qr.nrs",
+  "style": "style.css",
+  "files": [
+    "alca-qr.nrs",
+    "style.css",
+    "icon.svg",
+    "LICENSES.txt"
+  ],
+  "screenshots": [],
+  "permissions": [
+    "camera",
+    "fileRead",
+    "fileWrite"
+  ],
+  "minAlca": "0.1.6",
+  "changes": {
+    "26.11.1.0": "最初の版"
+  }
+}

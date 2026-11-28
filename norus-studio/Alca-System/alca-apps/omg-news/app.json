@@ -1,0 +1,24 @@
+{
+  "id": "omg-news",
+  "name": "omg News",
+  "version": "26.11.1.0",
+  "author": "norus-studio",
+  "summary": "世界のニュースを読む",
+  "description": "Hacker News（英語）のトップ・新着・ベストのニュースを読めます。\n記事は Alca Seeker で開きます。\n送り先：hacker-news.firebaseio.com",
+  "icon": "icon.svg",
+  "main": "omg-news.nrs",
+  "style": "style.css",
+  "files": [
+    "omg-news.nrs",
+    "style.css",
+    "icon.svg"
+  ],
+  "screenshots": [],
+  "permissions": [
+    "web"
+  ],
+  "minAlca": "0.1.6",
+  "changes": {
+    "26.11.1.0": "最初の版"
+  }
+}

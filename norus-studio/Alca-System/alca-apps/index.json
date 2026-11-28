@@ -16,6 +16,30 @@
       "author": "norus-studio",
       "summary": "文章をほかの言葉に翻訳する",
       "icon": "alca-translate/icon.svg"
+    },
+    {
+      "id": "alca-qr",
+      "name": "QRコード",
+      "version": "26.11.1.0",
+      "author": "norus-studio",
+      "summary": "QRコードを作る・読み取る",
+      "icon": "alca-qr/icon.svg"
+    },
+    {
+      "id": "omg-news",
+      "name": "omg News",
+      "version": "26.11.1.0",
+      "author": "norus-studio",
+      "summary": "世界のニュースを読む",
+      "icon": "omg-news/icon.svg"
+    },
+    {
+      "id": "alca-sticky",
+      "name": "付箋",
+      "version": "26.11.1.0",
+      "author": "norus-studio",
+      "summary": "メモをテーブルに貼る",
+      "icon": "alca-sticky/icon.svg"
     }
   ]
 }

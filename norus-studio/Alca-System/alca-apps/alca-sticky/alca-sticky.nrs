@@ -1,0 +1,147 @@
+const Sticky = (() => {
+    const FOLDER = 'appdata/付箋', FILE = 'notes.json';
+    const COLORS = [['yellow', '#ffe98a'], ['pink', '#ffc4d6'], ['blue', '#bfe0ff'], ['green', '#c8f0c0'], ['purple', '#dccbff']];
+    let notes = [];
+    let saveTimer = null;
+    async function load() {
+        const f = await VFS.read(FOLDER, FILE);
+        try { notes = f ? JSON.parse(f.content) : []; } catch (e) { notes = []; }
+        if (!Array.isArray(notes)) notes = [];
+    }
+    function save() {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(async () => {
+            if (!(await VFS.exists('appdata', '付箋'))) await VFS.mkdir('appdata', '付箋');
+            await VFS.write(FOLDER, FILE, JSON.stringify(notes));
+        }, 300);
+    }
+    const changed = from => { save(); Bus.emit('sticky', { from }); };
+    const colorOf = c => (COLORS.find(x => x[0] === c) || COLORS[0])[1];
+    function add(extra) {
+        const n = Object.assign({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), text: '', color: 'yellow', onTable: false, x: 0, y: 0, time: Date.now() }, extra);
+        notes.unshift(n);
+        changed();
+        return n;
+    }
+    function update(id, patch, from) {
+        const n = notes.find(x => x.id === id);
+        if (!n) return;
+        Object.assign(n, patch, { time: Date.now() });
+        changed(from);
+    }
+    function remove(id) { notes = notes.filter(x => x.id !== id); changed(); }
+    function pinToTable(id, on) {
+        const n = notes.find(x => x.id === id);
+        if (!n) return;
+        if (on && !n.onTable) {
+            const k = notes.filter(x => x.onTable).length;
+            n.x = Math.max(16, View.w() / 2 - 100 + (k % 6) * 24);
+            n.y = 120 + (k % 6) * 24;
+        }
+        n.onTable = on;
+        changed();
+    }
+    const layer = el('<div class="sticky-layer"></div>');
+    function renderTable(skipId) {
+        const table = document.getElementById('table');
+        if (!table) return;
+        if (!layer.isConnected) table.appendChild(layer);
+        const shown = new Set();
+        const maxX = View.w() - 60, maxY = View.h() - 140;
+        for (const n of notes.filter(x => x.onTable)) {
+            shown.add(n.id);
+            let node = layer.querySelector(`[data-id="${n.id}"]`);
+            if (!node) {
+                node = el(`<div class="sticky-note"><div class="sticky-bar"><button class="sticky-off" title="テーブルから外す">×</button></div><textarea spellcheck="false" placeholder="メモ"></textarea></div>`);
+                node.dataset.id = n.id;
+                node.addEventListener('pointerdown', e => e.stopPropagation());
+                node.addEventListener('contextmenu', e => e.stopPropagation());
+                const ta = node.querySelector('textarea');
+                ta.oninput = () => update(n.id, { text: ta.value }, 'table:' + n.id);
+                node.querySelector('.sticky-off').onclick = () => pinToTable(n.id, false);
+                dragBy(node.querySelector('.sticky-bar'), node, n.id);
+                layer.appendChild(node);
+            }
+            node.style.background = colorOf(n.color);
+            node.style.left = Math.min(Math.max(0, n.x), maxX) + 'px';
+            node.style.top = Math.min(Math.max(0, n.y), maxY) + 'px';
+            const ta = node.querySelector('textarea');
+            if (n.id !== skipId && ta.value !== n.text) ta.value = n.text;
+        }
+        layer.querySelectorAll('.sticky-note').forEach(nd => { if (!shown.has(nd.dataset.id)) nd.remove(); });
+    }
+    function dragBy(handle, node, id) {
+        handle.addEventListener('pointerdown', e => {
+            if (e.target.closest('button')) return;
+            e.preventDefault();
+            const sx = e.clientX, sy = e.clientY, ox = parseFloat(node.style.left), oy = parseFloat(node.style.top);
+            handle.setPointerCapture(e.pointerId);
+            const move = ev => { node.style.left = (ox + View.css(ev.clientX - sx)) + 'px'; node.style.top = (oy + View.css(ev.clientY - sy)) + 'px'; };
+            const up = () => {
+                handle.removeEventListener('pointermove', move); handle.removeEventListener('pointerup', up); handle.removeEventListener('pointercancel', up);
+                update(id, { x: parseFloat(node.style.left), y: parseFloat(node.style.top) }, 'drag');
+            };
+            handle.addEventListener('pointermove', move); handle.addEventListener('pointerup', up); handle.addEventListener('pointercancel', up);
+        });
+    }
+    const offSticky = Bus.on('sticky', e => renderTable(e.detail && e.detail.from && e.detail.from.startsWith('table:') ? e.detail.from.slice(6) : null));
+    const onResize = () => renderTable();
+    addEventListener('resize', onResize);
+    load().then(() => renderTable());
+    function dispose() {
+        layer.remove();
+        removeEventListener('resize', onResize);
+        if (typeof offSticky === 'function') offSticky();
+    }
+    return { COLORS, colorOf, list: () => notes, add, update, remove, pinToTable, dispose };
+})();
+registerApp({
+    id: 'alca-sticky',
+    name: '付箋',
+    size: [620, 520],
+    minSize: [360, 320],
+    single: true,
+    onUnload: () => Sticky.dispose(),
+    open(win) {
+        win.body.innerHTML = `<div class="app-fill sticky-app">
+            <div class="sticky-head"><button class="btn primary sticky-new">新しい付箋</button></div>
+            <div class="app-scroll sticky-grid"></div>
+        </div>`;
+        const grid = win.body.querySelector('.sticky-grid');
+        function card(n) {
+            const c = el(`<div class="sticky-card">
+                <textarea spellcheck="false" placeholder="メモ"></textarea>
+                <div class="sticky-tools">
+                    ${Sticky.COLORS.map(([k, v]) => `<button class="sticky-color${n.color === k ? ' on' : ''}" data-c="${k}" style="background:${v}" title="色"></button>`).join('')}
+                    <span class="spacer"></span>
+                    <button class="btn sticky-pin">${n.onTable ? 'テーブルから外す' : 'テーブルに貼る'}</button>
+                    <button class="icon-btn sticky-del" title="削除"><i class="fa-icon" aria-hidden="true"></i></button>
+                </div>
+            </div>`);
+            c.dataset.id = n.id;
+            c.style.background = Sticky.colorOf(n.color);
+            const ta = c.querySelector('textarea');
+            ta.value = n.text;
+            ta.oninput = () => Sticky.update(n.id, { text: ta.value }, 'win');
+            c.querySelectorAll('.sticky-color').forEach(b => b.onclick = () => Sticky.update(n.id, { color: b.dataset.c }));
+            c.querySelector('.sticky-pin').onclick = () => Sticky.pinToTable(n.id, !n.onTable);
+            c.querySelector('.sticky-del').onclick = async () => {
+                if (n.text.trim() && !(await UI.confirm('削除しますか？', 'この付箋を削除します。', '削除', true))) return;
+                Sticky.remove(n.id);
+            };
+            return c;
+        }
+        function render(from) {
+            const list = Sticky.list();
+            if (from === 'win' || from === 'drag') return;
+            grid.innerHTML = list.length ? '' : '<p class="empty-state">付箋はまだありません</p>';
+            list.forEach(n => grid.appendChild(card(n)));
+        }
+        win.body.querySelector('.sticky-new').onclick = () => {
+            const n = Sticky.add();
+            setTimeout(() => { const ta = grid.querySelector(`[data-id="${n.id}"] textarea`); if (ta) ta.focus(); }, 0);
+        };
+        win.on('sticky', e => render(e.detail && e.detail.from));
+        render();
+    },
+});

@@ -1,0 +1,13 @@
+.news-app { display: flex; flex-direction: column; }
+.news-head { display: flex; align-items: center; gap: 8px; padding: 4px 16px 10px; }
+.news-head .seg { margin-right: auto; }
+.news-list { flex: 1; min-height: 0; padding: 0 12px; }
+.news-item { display: flex; gap: 10px; padding: 9px 6px; border-bottom: 1px solid var(--border); }
+.news-rank { width: 22px; flex-shrink: 0; text-align: right; color: var(--sub); font-size: 12px; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.news-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.news-title { text-align: left; font-size: 14px; font-weight: 600; line-height: 1.4; color: var(--text); }
+.news-title:hover { color: var(--accent); }
+.news-meta { font-size: 11.5px; color: var(--sub); }
+.news-comments { font-size: 11.5px; color: var(--sub); }
+.news-comments:hover { color: var(--accent); text-decoration: underline; }
+.news-foot { font-size: 11px; color: var(--sub); text-align: center; padding: 6px 0 10px; }

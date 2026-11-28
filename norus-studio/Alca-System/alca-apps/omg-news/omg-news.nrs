@@ -1,0 +1,70 @@
+registerApp({
+    id: 'omg-news',
+    name: 'omg News',
+    size: [640, 600],
+    minSize: [380, 360],
+    uses: ['web'],
+    open(win) {
+        const API = 'https://hacker-news.firebaseio.com/v0/';
+        const LISTS = [['topstories', 'トップ'], ['newstories', '新着'], ['beststories', 'ベスト']];
+        win.body.innerHTML = `<div class="app-fill news-app">
+            <div class="news-head">
+                <div class="seg news-tabs">${LISTS.map(([k, n], i) => `<button data-list="${k}"${i ? '' : ' class="on"'}>${n}</button>`).join('')}</div>
+                <button class="icon-btn news-reload" title="読み込み直す"><i class="fa-icon" aria-hidden="true"></i></button>
+            </div>
+            <div class="app-scroll news-list"></div>
+            <p class="news-foot">Hacker News（英語）のニュースです</p>
+        </div>`;
+        const q = s => win.body.querySelector(s);
+        const listEl = q('.news-list');
+        let current = 'topstories', token = 0;
+        const ago = t => {
+            const s = Math.max(0, Date.now() / 1000 - t);
+            return s < 3600 ? `${Math.max(1, Math.floor(s / 60))}分前` : s < 86400 ? `${Math.floor(s / 3600)}時間前` : `${Math.floor(s / 86400)}日前`;
+        };
+        const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
+        const get = async path => {
+            const r = await fetch(API + path, { signal: AbortSignal.timeout(10000) });
+            if (!r.ok) throw new Error(r.status);
+            return r.json();
+        };
+        async function load() {
+            const my = ++token;
+            listEl.innerHTML = '<p class="empty-state">読み込み中…</p>';
+            if (!(await Torda.request('omg-news', 'web'))) { listEl.innerHTML = '<p class="empty-state">インターネットの使用が許可されていません</p>'; return; }
+            try {
+                const ids = (await get(current + '.json')).slice(0, 30);
+                const items = await Promise.all(ids.map(id => get(`item/${id}.json`).catch(() => null)));
+                if (my !== token) return;
+                Torda.record('omg News', 'ニュースを取ってきました（hacker-news.firebaseio.com）', true);
+                listEl.innerHTML = '';
+                items.filter(Boolean).forEach((it, i) => {
+                    const url = it.url || `https://news.ycombinator.com/item?id=${it.id}`;
+                    const row = el(`<div class="news-item">
+                        <span class="news-rank">${i + 1}</span>
+                        <div class="news-body">
+                            <button class="news-title">${esc(it.title || '')}</button>
+                            <span class="news-meta">${esc(host(url))}・${it.score || 0} ポイント・${ago(it.time)}・<button class="news-comments">コメント ${it.descendants || 0}</button></span>
+                        </div>
+                    </div>`);
+                    row.querySelector('.news-title').onclick = () => WM.open('alca-seeker', { address: url });
+                    row.querySelector('.news-comments').onclick = () => WM.open('alca-seeker', { address: `https://news.ycombinator.com/item?id=${it.id}` });
+                    listEl.appendChild(row);
+                });
+                if (!listEl.children.length) listEl.innerHTML = '<p class="empty-state">ニュースがありません</p>';
+            } catch (e) {
+                if (my !== token) return;
+                listEl.innerHTML = '';
+                const box = el('<div class="empty-state">ニュースを取ってこられませんでした<br><button class="btn" style="margin-top:12px">もう一度</button></div>');
+                box.querySelector('button').onclick = load;
+                listEl.appendChild(box);
+            }
+        }
+        win.body.querySelectorAll('.news-tabs button').forEach(b => b.onclick = () => {
+            win.body.querySelectorAll('.news-tabs button').forEach(x => x.classList.toggle('on', x === b));
+            current = b.dataset.list; load();
+        });
+        q('.news-reload').onclick = load;
+        load();
+    },
+});

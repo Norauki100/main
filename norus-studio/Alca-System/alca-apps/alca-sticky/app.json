@@ -1,0 +1,22 @@
+{
+  "id": "alca-sticky",
+  "name": "付箋",
+  "version": "26.11.1.0",
+  "author": "norus-studio",
+  "summary": "メモをテーブルに貼る",
+  "description": "付箋に書いたメモを、アプリの中に並べたり、テーブルに貼ったりできます。\nテーブルの付箋は、上の帯をつかんで動かせます。",
+  "icon": "icon.svg",
+  "main": "alca-sticky.nrs",
+  "style": "style.css",
+  "files": [
+    "alca-sticky.nrs",
+    "style.css",
+    "icon.svg"
+  ],
+  "screenshots": [],
+  "permissions": [],
+  "minAlca": "0.1.6",
+  "changes": {
+    "26.11.1.0": "最初の版"
+  }
+}
